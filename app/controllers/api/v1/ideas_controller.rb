@@ -1,16 +1,13 @@
 class Api::V1::IdeasController < ApplicationController
-  respond_to :json, :html
+  respond_to :json
 
   def index
     respond_with :api, :v1, Idea.all
   end
 
-  def show
-    respond_with :api, :v1, Idea.find_by(id: params[:id])
-  end
-
   def create
-    respond_with :api, :v1, Idea.create(idea_params)
+    idea =  Idea.create(idea_params)
+    render json: idea, location: [:api, :v1, idea]
   end
 
   def update

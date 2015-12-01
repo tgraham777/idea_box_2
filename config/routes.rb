@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  root 'api/v1/ideas#index'
+  root 'welcome#index'
 
   namespace :api do
     namespace :v1 do
-      resources :ideas
+      resources :ideas, only: [:index, :update, :create, :destroy]
     end
   end
 end
