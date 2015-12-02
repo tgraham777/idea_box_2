@@ -43,3 +43,7 @@ group :development, :test do
   gem 'capybara'
   gem 'pry', :require => 'pry'
 end
+
+group :production do
+  gem 'rails_12factor'
+end
