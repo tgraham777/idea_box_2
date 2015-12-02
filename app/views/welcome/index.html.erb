@@ -1,16 +1,18 @@
-<h1>Welcome to IdeaBox 2.0!</h1>
+<h1 class="main-title">Welcome to IdeaBox 2.0!</h1>
+<hr>
 
-<h2>Got a new idea?</h2>
+<h2 class="new-idea-title">Got a new idea?</h2>
   <form class="new-idea" action="/api/v1/ideas" method="post">
     Title:<br>
       <input type="text" name="idea[title]" id="new-idea-title">
       <br><br>
-    Body:<br>
-      <input type="text" name="idea[body]" id="new-idea-body"><br>
-    <input type="submit" value="Save" id="submit-idea"><br>
-  </form><br>
+    Description:<br>
+      <textarea type="text" name="idea[body]" id="new-idea-body"></textarea><br>
+    <input class="save-button" type="submit" value="Save" id="submit-idea">
+  </form>
+  <hr>
 
-<h2>Your saved ideas:</h2>
+<h2 class="previous-ideas-title">Previous Ideas</h2>
   <div>
     <ul class="idea-list">
     </ul>
