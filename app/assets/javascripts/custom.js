@@ -16,7 +16,7 @@ var ideaBox = {
         .append("<button class='delete-button'>" + "Delete" + "</button>" + "<br><br>");
         return $listItem;
       });
-      $(".idea-list").html($ideaElements);
+      $(".idea-list").html($ideaElements.reverse());
       ideaBox.deleteIdea();
     });
   },
