@@ -88,11 +88,12 @@ var ideaBox = {
     var $body = $idea.find('.idea-body').text();
     $.ajax({
       type: 'PATCH',
-      url: '/api/v1/ideas/' + idea.attr('id'),
+      url: '/api/v1/ideas/' + $idea.attr('id'),
       data: {idea: {body: $body}},
       success: function(){
         ideaBox.getIdeas();
-      }
+      },
+      error: console.log("failed")
     });
   },
 
