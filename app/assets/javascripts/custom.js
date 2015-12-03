@@ -12,7 +12,7 @@ var ideaBox = {
         .attr('id', idea.id)
         .append("<h3 class='idea-title'>" + idea.title + "</h3>")
         .append("<p class='idea-body'>" + idea.body + "</p>")
-        .append("<p>" + "Quality: " + "<span class='idea-quality'>" + idea.quality + "</span>"+ "</p>")
+        .append("<p>" + "Quality: " + "<span class='idea-quality'>" + "<i>" + idea.quality + "</i>" + "</span>"+ "</p>")
         .append("<button class='delete-button'>" + "Delete" + "</button>" + "<br><br>");
         return $listItem;
       });
