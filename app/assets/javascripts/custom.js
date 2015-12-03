@@ -13,7 +13,7 @@ var ideaBox = {
         .append("<h3>" + idea.title + "</h3>")
         .append("<p>" + "Description: " + idea.body + "</p>")
         .append("<p>" + "Quality: " + idea.quality + "</p>")
-        .append("<button class='delete-button'>" + "Delete" + "</button>");
+        .append("<button class='delete-button'>" + "Delete" + "</button>" + "<br><br>");
         return $listItem;
       });
       $(".idea-list").html($ideaElements);
