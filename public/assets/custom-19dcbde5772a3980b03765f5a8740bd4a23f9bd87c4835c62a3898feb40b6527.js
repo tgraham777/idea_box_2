@@ -12,12 +12,15 @@ var ideaBox = {
         .attr('id', idea.id)
         .append("<h3 class='idea-title'>" + idea.title + "</h3>")
         .append("<p class='idea-body'>" + idea.body + "</p>")
-        .append("<p>" + "Quality: " + "<span class='idea-quality'>" + idea.quality + "</span>"+ "</p>")
+        .append("<p class='idea-quality'>" + "Quality: " + "<span id='idea-quality'>" + "<i>" + idea.quality + "</i>" + "</span>"+ "</p>")
+        .append("<button id='thumbs-up-button'>" + "Thumbs Up!" + "</button>&nbsp")
+        .append("<button id='thumbs-down-button'>" + "Thumbs Down!" + "</button>&nbsp&nbsp&nbsp")
         .append("<button class='delete-button'>" + "Delete" + "</button>" + "<br><br>");
         return $listItem;
       });
       $(".idea-list").html($ideaElements.reverse());
       ideaBox.editIdea();
+      ideaBox.thumbsUpDown();
       ideaBox.deleteIdea();
     });
   },
@@ -85,13 +88,43 @@ var ideaBox = {
     var $body = $idea.find('.idea-body').text();
     $.ajax({
       type: 'PATCH',
-      url: '/api/v1/ideas/' + $idea.attr('id'),
+      url: '/api/v1/ideas/' + idea.attr('id'),
       data: {idea: {body: $body}},
       success: function(){
         ideaBox.getIdeas();
       }
     });
   },
+
+  thumbsUpDown: function(){
+    ideaBox.thumbsUp();
+    // ideaBox.thumbsDown();
+  },
+
+  thumbsUp: function(){
+    $('.idea-list').on('click', '#thumbs-up-button', function(){
+      var $idea = $(this).closest('.idea');
+      var $quality = $idea.find('#idea-quality').text();
+      if($quality === "swill") {
+          ideaBox.updateQuality($idea, "plausible");
+      } else if($quality === "plausible") {
+          ideaBox.updateQuality($idea, "genius");
+      } else {
+          console.log("Idea already rated genius!")
+      }
+    })
+  },
+
+  updateQuality: function($idea, quality){
+    $.ajax({
+      type: 'PATCH',
+      url: '/api/v1/ideas/' + $idea.attr('id'),
+      data: {idea: {quality: quality}},
+      // success: function(){
+      //   ideaBox.getIdeas();
+      // },
+    });
+  }
 };
 
 $(document).ready(ideaBox.init);
