@@ -1,11 +1,11 @@
 var ideaBox = {
-  init: function(){
+  init: function() {
     ideaBox.getIdeas();
     ideaBox.bindSubmitButton();
   },
 
-  getIdeas: function(){
-    $.getJSON('api/v1/ideas', function(response){
+  getIdeas: function() {
+    $.getJSON('api/v1/ideas', function(response) {
       var $ideaElements = $.map(response, function (idea, index) {
         var $listItem = $('<li></li>')
         .addClass('idea')
@@ -27,85 +27,87 @@ var ideaBox = {
     });
   },
 
-  bindSubmitButton: function(){
+  bindSubmitButton: function() {
     $('.new-idea').on('submit', function (event) {
       event.preventDefault();
       var $data = $(this).serialize();
-      $.post( '/api/v1/ideas', $data, function(){
-        ideaBox.getIdeas();}, 'JSON');
-        $(this).trigger('reset');
+      $.post('/api/v1/ideas', $data, function() {
+        ideaBox.getIdeas();
+      }, 'JSON');
+      $(this).trigger('reset');
     });
   },
 
-  deleteIdea: function(){
-    $('.delete-button').one('click', function(){
+  deleteIdea: function() {
+    $('.delete-button').one('click', function() {
       var $idea = $(this).closest('.idea');
       $.ajax( {
         url: '/api/v1/ideas/' + $idea.attr('id'),
         type: 'DELETE',
         dataType: 'JSON',
-        success: function(){
+        success: function() {
           $idea.remove();
         }
       });
     });
   },
 
-  editIdea: function(){
+  editIdea: function() {
     ideaBox.editTitle();
     ideaBox.editBody();
   },
 
-  editTitle: function(){
-    $('.idea-list').one('click', '.idea-title', function(){
+  editTitle: function() {
+    $('.idea-list').one('click', '.idea-title', function() {
       $(this).attr('contenteditable', 'true')
       .focus()
-      .one('blur', ideaBox.updateTitle)
+      .one('blur', ideaBox.updateTitle);
     });
   },
 
-  updateTitle: function(event){
+  updateTitle: function(event) {
     var $idea = $(this).closest('.idea');
     var $title = $idea.find('.idea-title').text();
     $.ajax({
       type: 'PATCH',
       url: '/api/v1/ideas/' + $idea.attr( 'id' ),
       data: {idea: {title: $title}},
-      success: function(){
+      success: function() {
         ideaBox.getIdeas();
-      }
+      },
+      error: console.log("Title update failed")
     });
   },
 
-  editBody: function(){
-    $('.idea-list').one('click', '.idea-body', function(){
+  editBody: function() {
+    $('.idea-list').one('click', '.idea-body', function() {
       $(this).attr('contenteditable', 'true')
       .focus()
-      .one('blur', ideaBox.updateBody)
+      .one('blur', ideaBox.updateBody);
     });
   },
 
-  updateBody: function(event){
+  updateBody: function(event) {
     var $idea = $(this).closest('.idea');
     var $body = $idea.find('.idea-body').text();
     $.ajax({
       type: 'PATCH',
       url: '/api/v1/ideas/' + $idea.attr('id'),
       data: {idea: {body: $body}},
-      success: function(){
+      success: function() {
         ideaBox.getIdeas();
       },
-      error: console.log("failed")
+      error: console.log("Body update failed")
     });
   },
 
-  thumbsUpDown: function(){
+  thumbsUpDown: function() {
     ideaBox.thumbsUp();
     ideaBox.thumbsDown();
   },
 
-  thumbsUp: function(){
-    $('.idea-list').one('click', '#thumbs-up-button', function(){
+  thumbsUp: function() {
+    $('.idea-list').one('click', '#thumbs-up-button', function() {
       var $idea = $(this).closest('.idea');
       var $quality = $idea.find('#idea-quality').text();
       if($quality === "swill") {
@@ -113,39 +115,40 @@ var ideaBox = {
       } else if($quality === "plausible") {
           ideaBox.updateQuality($idea, "genius");
       } else {
-          console.log("Idea already rated genius!")
+          console.log("Idea already rated genius!");
           ideaBox.getIdeas();
       }
-    })
+    });
   },
 
-  thumbsDown: function(){
-    $('.idea-list').one('click', '#thumbs-down-button', function(){
+  thumbsDown: function() {
+    $('.idea-list').one('click', '#thumbs-down-button', function() {
       var $idea = $(this).closest('.idea');
       var $quality = $idea.find('#idea-quality').text();
       if($quality === "swill") {
-          console.log("Idea already rated as swill!")
+          console.log("Idea already rated as swill!");
+          ideaBox.getIdeas();
       } else if($quality === "plausible") {
           ideaBox.updateQuality($idea, "swill");
       } else {
           ideaBox.updateQuality($idea, "plausible");
       }
-    })
+    });
   },
 
-  updateQuality: function($idea, quality){
+  updateQuality: function($idea, quality) {
     $.ajax({
       type: 'PATCH',
       url: '/api/v1/ideas/' + $idea.attr('id'),
       data: {idea: {quality: quality}},
-      success: function(){
+      success: function() {
         ideaBox.getIdeas();
       },
     });
   },
 
-  truncateBody: function(){
-    $('.idea').each(function(_, idea){
+  truncateBody: function() {
+    $('.idea').each(function(_, idea) {
       var $body = $(idea).find('.idea-body');
       var $before = $body.text();
       var $after = ideaBox.shortenText($before);
@@ -153,22 +156,23 @@ var ideaBox = {
     });
   },
 
-  shortenText: function(string){
-    if(string.length >= 100) {
+  shortenText: function(string) {
+    if(string.length > 100) {
       var cut = string.lastIndexOf(' ', 100);
-      var shortenedString =  string.substring(0, cut) + '...';
+      return string.substring(0, cut) + '...';
+    } else {
+      return string;
     }
-    return shortenedString;
   },
 
-  searchIdeas: function(){
-    $("#search-bar").keyup(function(){
+  searchIdeas: function() {
+    $("#search-bar").keyup(function() {
       var input = $(this).val();
-      $(".idea-list li").each(function(){
+      $(".idea-list li").each(function() {
         if ($(this).text().search(new RegExp(input, "i")) < 0) {
-            $(this).fadeOut();
+          $(this).fadeOut();
         } else {
-            $(this).show();
+          $(this).show();
         }
       });
     });
